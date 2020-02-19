@@ -20,16 +20,17 @@ export const ProductList = styled.ul`
     }
 
     > strong {
-      font-size: 16px;
+      font-size: 14px;
       line-height: 20px;
       color: black;
       margin-top: 5px;
     }
 
     > span {
-      font-size: 21px;
+      font-size: 20px;
       font-weight: bold;
       margin-top: 5px;
+      margin-bottom: 15px;
     }
 
     button {

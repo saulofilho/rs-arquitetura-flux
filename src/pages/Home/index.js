@@ -1,122 +1,63 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { MdAddShoppingCart } from 'react-icons/md';
+import { formatPrice } from '../../util/format';
+import api from '../../services/api';
 import { ProductList } from './styles';
+import * as CartActions from '../../store/modules/cart/actions';
 
-export default function Home() {
-  return (
-    <ProductList>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_zoom1.jpg?ims=544x"
-          alt="Tênis"
-        />
-        <strong>RTênis Nike Tênis Nike Tênis Nike</strong>
-        <span>R$ 99,99</span>
+class Home extends Component {
+  state = {
+    products: [],
+  };
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="lightgray" /> 3
-          </div>
+  async componentDidMount() {
+    const response = await api.get('products');
 
-          <span>aAdd ao carrionho</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_zoom1.jpg?ims=544x"
-          alt="Tênis"
-        />
-        <strong>Tênis Nike</strong>
-        <span>R$ 99,99</span>
+    const data = response.data.map(product => ({
+      ...product,
+      priceFormatted: formatPrice(product.price),
+    }));
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="lightgray" /> 3
-          </div>
+    this.setState({ products: data });
+  }
 
-          <span>aAdd ao carrionho</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_zoom1.jpg?ims=544x"
-          alt="Tênis"
-        />
-        <strong>Tênis Nike</strong>
-        <span>R$ 99,99</span>
+  handleAddProduct = product => {
+    const { addToCart } = this.props;
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="lightgray" /> 3
-          </div>
+    addToCart(product);
+  };
 
-          <span>aAdd ao carrionho</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_zoom1.jpg?ims=544x"
-          alt="Tênis"
-        />
-        <strong>Tênis Nike</strong>
-        <span>R$ 99,99</span>
+  render() {
+    const { products } = this.state;
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="lightgray" /> 3
-          </div>
+    return (
+      <ProductList>
+        {products.map(product => (
+          <li key={product.id}>
+            <img src={product.image} alt={product.title} />
+            <strong>{product.title}</strong>
+            <span>{product.priceFormatted}</span>
 
-          <span>aAdd ao carrionho</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_zoom1.jpg?ims=544x"
-          alt="Tênis"
-        />
-        <strong>Tênis Nike</strong>
-        <span>R$ 99,99</span>
+            <button
+              type="button"
+              onClick={() => this.handleAddProduct(product)}
+            >
+              <div>
+                <MdAddShoppingCart size={16} color="lightgray" /> 3
+              </div>
 
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="lightgray" /> 3
-          </div>
-
-          <span>aAdd ao carrionho</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_zoom1.jpg?ims=544x"
-          alt="Tênis"
-        />
-        <strong>Tênis Nike</strong>
-        <span>R$ 99,99</span>
-
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="lightgray" /> 3
-          </div>
-
-          <span>aAdd ao carrionho</span>
-        </button>
-      </li>
-      <li>
-        <img
-          src="https://static.netshoes.com.br/produtos/tenis-nike-revolution-5-masculino/26/HZM-1731-026/HZM-1731-026_zoom1.jpg?ims=544x"
-          alt="Tênis"
-        />
-        <strong>Tênis Nike</strong>
-        <span>R$ 99,99</span>
-
-        <button type="button">
-          <div>
-            <MdAddShoppingCart size={16} color="lightgray" /> 3
-          </div>
-
-          <span>aAdd ao carrionho</span>
-        </button>
-      </li>
-    </ProductList>
-  );
+              <span>Add ao carrionho</span>
+            </button>
+          </li>
+        ))}
+      </ProductList>
+    );
+  }
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+export default connect(null, mapDispatchToProps)(Home);
